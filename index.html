@@ -1,0 +1,115 @@
+<html>
+
+<head>
+    <title>MindAR.js: Minimal example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/dist/mindar-image-aframe.prod.js"></script>
+    <!-- 
+        Let's add a component wich enables transparent videos:
+        https://github.com/balataca/aframe-transparent-video-shader
+    -->
+    <script
+        src="https://unpkg.com/aframe-transparent-video-shader@1.0.3/dist/aframe-transparent-video-shader.umd.js"></script>
+</head>
+
+<body>
+    <a-scene
+        mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/examples/image-tracking/assets/card-example/card.mind;"
+        vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+        <!-- https://hiukim.github.io/mind-ar-js-doc/tools/compile/  link for new target, but for simplicity im going to 
+        leave that be-->
+        <a-assets>
+            <!-- Sample video was taken from aframe-transparent-video-shader component example -->
+            <video id="videoId" src="result.webm" muted autoplay></video>
+        </a-assets>
+        <a-camera position="0 0 0" look-controls="enabled: false" cursor="rayOrigin: mouse;"
+            raycaster="far: ${customFields.libVersion}; objects: .interactive"></a-camera>
+
+        <a-entity mindar-image-target="targetIndex: 0">
+            <!-- Simple card-->
+            <a-plane color="white" opaciy="0.5" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane>
+            <a-entity position="-0.8 0 0" id="ball" gltf-model="untitled.glb" scale="0.015 0.015 0.015" visible="false">
+            </a-entity>
+
+            <!-- Buttons -->
+            <a-entity position="0 -0.4 0">
+
+                <a-entity id="logo" class="interactive" scale="0.2 0.2 0.2" geometry="primitive: plane;"
+                    material="src: javascript.png; transparent: true" position="-0.4 0 0">
+                    <!-- Here i am changing the src to the AR buttons that pop up, they will be for my github, website, and linkedin-->
+                </a-entity>
+                <a-entity id="logoweb" class="interactive" scale="0.2 0.2 0.2" geometry="primitive: plane;"
+                    material="src: web.png; transparent: true" position="-0.11 0 0">
+                    <!-- Here i am changing the src to the AR buttons that pop up, they will be for my github, website, and linkedin-->
+                </a-entity>
+                <a-entity id="logo2" class="interactive" scale="0.2 0.2 0.2" geometry="primitive: plane;"
+                    material="src: GitHubSymbol.png; transparent: true" position=".1 0 0">
+                </a-entity>
+                <a-entity id="logo3" class="interactive" scale="0.2 0.2 0.2" geometry="primitive: plane;"
+                    material="src: linkedin.png; transparent: true" position="0.37 0 0">
+                </a-entity>
+            </a-entity>
+
+            <!-- Video -->
+            <a-entity position="0 0 0.1">
+                <!-- Play Button -->
+                <a-entity id="playB" class="interactive" scale="0.2 0.2 0.2" geometry="primitive: plane;"
+                    material="src: playIcon.png; transparent: true" position="0 0 0.1">
+                </a-entity>
+                <!-- Transparent Video -->
+                <a-entity id="transparentVideo" material="shader: transparent-video; src: #videoId" geometry="primitive: plane;
+                  width: 1;
+                  height: 0.5" position="0 0 0">
+                    <!-- changed the width to 1 and im trying to fit the video i converted from a gif on the plane-->
+                </a-entity>
+            </a-entity>
+        </a-entity>
+    </a-scene>
+</body>
+<script>
+    var playB = document.querySelector("#playB");
+    var video = document.querySelector("video");
+    var logo1 = document.querySelector("#logo");
+    var logoweb = document.querySelector("#logoweb");
+    var logo2 = document.querySelector("#logo2");
+    var logo3 = document.querySelector("#logo3")
+    var ball = document.querySelector("#ball");
+    var transparentVideo = document.querySelector("transparentVideo");
+
+    playB.addEventListener('click', () => {
+
+        video.play();
+        playB.setAttribute("visible", false);
+        playB.setAttribute("position", "-4 0 0.1")
+    });
+
+    video.addEventListener('ended', () => {
+        transparentVideo.setAttribute("visible", false);
+        playB.setAttribute("position", "0 0 0.1")
+        playB.setAttribute("visible", true);
+
+    });
+    logo1.addEventListener('click', () => {
+
+        ball.setAttribute("visible", true);
+        ball.setAttribute("animation", "property: rotation; to: 0 360 0; dur: 3000; loop: true");
+        //changed the rotation to fit my model and rotate the computer on the y axis over and over
+    });
+    logoweb.addEventListener('click', () => {
+        window.open("https://jpp2121.github.io/parker_site/");
+    });
+    logo2.addEventListener('click', () => {
+
+        window.open("https://github.com/jpp2121"); // here I am changing the url for the click event on logo2, 
+        //so when I click on logo2 I will be redirected to my github
+    });
+    logo3.addEventListener('click', () => {
+
+        window.open("https://www.linkedin.com/in/josh-parker-16353016b/"); // here I am changing the url for the click event on logo2, 
+        //so when I click on logo2 I will be redirected to my github
+    });
+</script>
+
+</html>
